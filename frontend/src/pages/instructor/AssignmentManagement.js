@@ -250,7 +250,7 @@ const AssignmentManagement = () => {
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Total Points</label>
-                <input type="number" style={styles.input} value={formData.totalPoints} onChange={(e) => setFormData({...formData, totalPoints: e.target.value})} required min="1" />
+                <input type="number" style={styles.input} value={formData.totalPoints} onChange={(e) => setFormData({...formData, totalPoints: parseInt(e.target.value, 10) || 0})} required min="1" />
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button type="submit" style={styles.button}>Create</button>

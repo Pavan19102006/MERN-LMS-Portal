@@ -44,7 +44,12 @@ const submissionSchema = new mongoose.Schema({
   }
 });
 
-// Compound index to ensure a student can only submit once per assignment
+/**
+ * Compound unique index on assignment and student fields.
+ * This ensures that a student can only submit one response per assignment,
+ * preventing duplicate submissions while allowing the same student to submit
+ * to different assignments and multiple students to submit to the same assignment.
+ */
 submissionSchema.index({ assignment: 1, student: 1 }, { unique: true });
 
 module.exports = mongoose.model('Submission', submissionSchema);

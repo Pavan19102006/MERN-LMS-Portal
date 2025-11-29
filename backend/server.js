@@ -76,7 +76,11 @@ io.on('connection', (socket) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  res.status(500).json({ 
+    message: isDevelopment ? err.message : 'Something went wrong!',
+    ...(isDevelopment && { stack: err.stack })
+  });
 });
 
 const PORT = process.env.PORT || 5000;

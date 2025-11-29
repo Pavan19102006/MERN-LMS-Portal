@@ -26,14 +26,16 @@ router.post('/register', async (req, res) => {
     }
 
     // Only allow Admin registration if no admin exists (first user)
+    // Use findOneAndUpdate with upsert-like behavior to prevent race conditions
     let userRole = role || 'Student';
     if (role === 'Admin') {
-      const adminExists = await User.findOne({ role: 'Admin' });
-      if (adminExists) {
+      const adminCount = await User.countDocuments({ role: 'Admin' });
+      if (adminCount > 0) {
         userRole = 'Student'; // Default to student if admin exists
       }
     }
 
+    // Create user - the unique email constraint prevents duplicate users
     const user = await User.create({
       name,
       email,

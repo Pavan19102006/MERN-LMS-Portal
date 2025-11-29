@@ -156,8 +156,17 @@ const UserManagement = () => {
                 <input type="email" style={styles.input} value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required />
               </div>
               <div style={styles.inputGroup}>
-                <label style={styles.label}>Password</label>
-                <input type="password" style={styles.input} value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} required minLength={6} />
+                <label style={styles.label}>Password (min 6 chars, include uppercase, lowercase, and number)</label>
+                <input 
+                  type="password" 
+                  style={styles.input} 
+                  value={formData.password} 
+                  onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                  required 
+                  minLength={6}
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                  title="Password must be at least 6 characters and include uppercase, lowercase, and a number"
+                />
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Role</label>

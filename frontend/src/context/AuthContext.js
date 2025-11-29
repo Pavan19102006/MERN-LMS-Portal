@@ -11,13 +11,25 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
-    }
-    setLoading(false);
+    // Verify stored token is still valid on app load
+    const verifyStoredUser = async () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+          // Verify token is still valid by calling the /me endpoint
+          await axios.get(`${API_URL}/auth/me`);
+          setUser(parsedUser);
+        } catch (err) {
+          // Token is invalid, clear stored user
+          localStorage.removeItem('user');
+          delete axios.defaults.headers.common['Authorization'];
+        }
+      }
+      setLoading(false);
+    };
+    verifyStoredUser();
   }, []);
 
   const login = async (email, password) => {
