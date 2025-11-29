@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
+const { apiLimiter, authLimiter } = require('./middleware/rateLimit');
 
 // Route imports
 const authRoutes = require('./routes/auth');
@@ -40,12 +41,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/assignments', assignmentRoutes);
-app.use('/api/submissions', submissionRoutes);
+// Routes with rate limiting
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/users', apiLimiter, userRoutes);
+app.use('/api/courses', apiLimiter, courseRoutes);
+app.use('/api/assignments', apiLimiter, assignmentRoutes);
+app.use('/api/submissions', apiLimiter, submissionRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
